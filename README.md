@@ -23,7 +23,7 @@ The dataset provided information on the following features for each customer:
 * No. of calls to customer service
 * If they have churned
 
-#### EDA
+### EDA
 I wanted to see if there might be a trend in the certain states churning more than others, so I plotted the no. of churns per state below.
 ![pic6a](./images/map.png)
 
@@ -34,6 +34,8 @@ We have classification problem so we need to check the balance of the given data
 |0	|2850|	85.508551|
 |1	|483 |	14.491449|
 Of the 3,333 customers in the dataset, 483 have terminated their contract. That is 14.5% of customers lost. The distribution of the binary classes shows a data imbalance. This needs to be addressed before modeling as an unbalanced feature can cause the model to make false predictions.
+#### Barplot of Outcome vs Percentage
+![pic6a](./images/churn percentage.png)
 ### Modeling & Evaluation
 Since the goal is to reduce the number of customer churns, I want to reduce the number of number of customers that leave since they were not identified as a churn risk, or simply, the number false negatives. This means that we want to prioritize recall, but not make the model so inaccurate that all customers are identified as potential churners.
 
