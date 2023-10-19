@@ -33,98 +33,81 @@ We have classification problem so we need to check the balance of the given data
 |-------|--------|--------|
 |0	|2850|	85.508551|
 |1	|483 |	14.491449|
+
 Of the 3,333 customers in the dataset, 483 have terminated their contract. That is 14.5% of customers lost. The distribution of the binary classes shows a data imbalance. This needs to be addressed before modeling as an unbalanced feature can cause the model to make false predictions.
+
 #### Barplot of Outcome vs Percentage
-![pic6a](./images/churn percentage.png)
-### Modeling & Evaluation
+![pic6a](./images/churn_percentage.png)
+### Modeling
 Since the goal is to reduce the number of customer churns, I want to reduce the number of number of customers that leave since they were not identified as a churn risk, or simply, the number false negatives. This means that we want to prioritize recall, but not make the model so inaccurate that all customers are identified as potential churners.
+I built a model that can predict the customer churn based on the features in our dataset. The model will be evaluated on the recall score. Specifically, if it achieves an recall score of 80% or higher, it will be considered a success.
 
-#### Model 1 - Logistic Regression - SKlearn
-I tried logistic regression for my first model.
-##### Results:
-| Metric      | LR     |
-| ---------- |:--------:|
-|Accuracy|86.3%|
-|Recall|20.68%|
-|F1|31.2%|
-|AUC|45.0%|
+In order to achieve the targets stipulated in the project proposal, we will be using the following algorithms:
 
-Accuracy was not bad, but performed poorly in other metrics, especially recall. Considering logistic regression is better for data that are more continuous, I tried a different classifier.
+1. Logistic Regression
+1. Decision Tree
+1. Random Forest
+1. XG Boost 
 
-#### Model 2 - Decision Tree Classifier
-Next, I tried a Decision Tree Classifier, trying both Gini Impurity and Information Gain (entropy).
-##### Results:
-| Metric      | Gini     | Entropy  |
-| ---------- |:--------:|:--------:|
-|Accuracy|91.5%|93.1%|
-|Recall|72.0%|71.3%|
-|F1|70.8%|74.7%|
-|AUC|72.8%|76.9%|
+#### Model 1 - Logistic Regression (Confusion matrix)
+![pic6a](./images/logistic_regression.png)
 
-Using Gini provided slightly better recall than entropy, however with the sacrifice of some accuracy, F1, and AUC. Either way, this model outperforms logistic regression, but I felt this could still be improved.
+#### Model 2 - Decision Tree (Confusion matrix)
+![pic6a](./images/decision_trees.png)
 
-#### Model 3 - XGBoost + Grid Search
-For my last set of models, I used XGBoost to train gradient-boosted decision trees. I then used a grid search to optimize the parameters to produce an even better model.
-##### Results:
-| Metric      | XGB      | Grid Search|
-| ---------- |:--------:|:--------:|
-|Accuracy|95.3%|95.1%|
-|Recall|70.6%|83.9%|
-|F1|81.1%|83.0%|
-|AUC|88.6%|87.3%|
+#### Model 3 Random Forest (confusion matrix)
+![pic6a](./images/random_forest.png)
 
-The recall was boosted significantly by imposing greater penalties for errors on the minor class, which in this situation is identifying the churners.
+#### Model 4 - XGBoost (Confusion matrix)
+![pic6a](./images/xgboost.png)
 
-The best performing model was the grid search with XGBoost with a recall of 83.9%. Below is the decision matrix used to calculate recall and also the Precision-Recall curve used to calculate AUC. PR curve used instead of ROC curve since the classes are imbalanced, as evidenced by the confusion matrix.
+The best performing model was the grid search with XGBoost with a recall of 72.87%.
+#### Top 10 feature importance graph
+![pic6a](./images/feature_importance.png)
 
-![pic2](./images/conf_matrix_gridsearch.png)
-recall = True Positives / (True Positives + False Negatives)
-= 120 / (120 + 23) = 96.9%
-
-![pic3](./images/pr_curve_gridsearch.png)
-AUC = 87.3%
-
-### Evaluation
-I stayed with the boosted model to determine feature importance, and used SHAP (SHapley Additive exPlanations) to determine them:
-![pic4](./images/shap_importance.png)
-
-### Recommendations
-
-#### Recommendation 1:
-Looking at the first feature from the importance graph, I used a boxplot to compare the total day minutes of customers who stayed and those who churned.
-![pic5](./images/boxplot_day_minutes.png)
+Looking at the first four features from the importance graph, developed some visualization of customers who stayed and those who churned.
+![pic6a](./images/1.png)
+![pic6a](./images/2.png)
 | Metric | No Churn | Churned |
 | ---------- |:--------:|:--------:|
-|Median|177.2 mins|217.6 mins|
-|Mean|175.2 mins|206.9 mins|
+|Median|177.2 mins|222.9 mins|
+|Mean|175.5 mins|209.8 mins|
 
+Customers who spent more time on the phone during the day are more likely to churn. Customers who average over 200 minutes (outside the “box” for non-churners) should be considered higher risk for churning. Further investigation should be done if the needs of these heavy users of daytime minutes are being met.
 
-Customers who spent more time on the phone during the day are more likely to churn. Customers who average over 200 minutes (outside the "box" for non-churners) should be considered higher risk for churning. Further investigation should be done if the needs of these heavy users of daytime minutes are being met.
-
-#### Recommendation 2:
-The next most important feature is the number of service calls. I used a box plot to compare frequency of calls to customer service for both churners and non-churners. I also used a bar graph to look at the number of times churners called customer service.
-![pic6a](./images/boxplot_no_service_calls.png)
-![pic6b](./images/bar_service_calls.png)
-As can been seen from the bar graph, most churners called at least once. If a customer calls, it should be taken as an opportunity to make sure they are satisfied with their service. While plenty of non-churners call, all callers should be treated as a churn risk since there is considerable overlap, and the goal is to minimize churns.
-
-#### Recommendation 3:
-The third most important feature is if the customer has an international plan.
-![pic7a](./images/bar_intl_plan.png)
-![pic7b](./images/bar_intl_plan_churns.png)
-| Int'l Plan? | No Churn | Churned |
+![pic6a](./images/3.png)
+| Metric | No Churn | Churned |
 | ---------- |:--------:|:--------:|
-|Yes|186 customers|137 customers|
-|No|2664 customers|297 customers|
+|Median|30.12| 37.89 |
+|Mean| 29.84 | 35.66 |
 
-About 32% of churners have an international plan, compared to about 7% of non-churners. Further investigation should be done to determine if international plans are meetings customers needs.
+Customers who are charged more money on the phone are more likely to churn. Customers who average 35 US dollars (outside the “box” for non-churners) should be considered higher risk for churning.
 
-### Conclusion:
-While region did not appear to have much influence on customer churn, several other factors did. The telecom company should conduct further research to ensure their heavy daytime minute user, international plan users, and customers who call customer service are satisfied with their service.
+
+![pic6a](./images/4.png)
+| Metric | No Churn | Churned |
+| ---------- |:--------:|:--------:|
+|Median|199.7 mins|211.6 mins|
+|Mean|199.1 mins|213.2 mins|
+
+Customers who spent more time on the phone during the evening are more likely to churn. Customers who average over 210 minutes (outside the "box" for non-churners) should be considered higher risk for churning. Further investigation should be done if the needs of these heavy users of night time minutes are being met.
+### Conclusion
+#### Findings
+Within the dataset, it was evident that the SyriaTel business model was to charge customers based on the number of minutes that they used. However, it is evident that within the contributors of high customer churn, all of the factors are leading to a higher bill that is deterring the customer from continuing their phone plan.
+
+#### Recommendations
+Evaluate the pricing structure for day. Consider adjusting pricing plans or introducing discounted packages to address the higher charges associated with customers who churn.
+
+Since Most of the customers are from West Virginia,Minnesota,NewYork,Alabama and Wisconsin, they should Offer discounts or promotional offers to the customers from this states. as these areas have a higher churn rate. This can help incentivize customers to stay with the company.
+
+Develop customer retention strategies specific to high night time minute users. This could involve offering retention incentives or discounts to keep these customers loyal.
+
+Personalized Offers; Use the information about high daytime minute usage to create personalized offers and incentives for customers who are at risk of churning. Tailor these offers to match their usage patterns and preferences.
 
 ### Deployment
 For More Information, please review my full analysis in Jupyter Notebook or my presentation.
 
-For any additional questions, please contact Catherine Fritz: cmfritz0@gmail.com.
+For any additional questions, please contact gichanga.samuel16@gmail.com
 
 ## Repository Structure
 #### Main Page
@@ -133,10 +116,3 @@ For any additional questions, please contact Catherine Fritz: cmfritz0@gmail.com
     ├── analysis.ipynb                         <- master notebook
     ├── data                                   <- folder where data exists
     ├── images                                 <- folder where data visualizations and graphics are located
-
-#### Data
-    ├── churn_data.csv                         <- churn data .csv file
-    ├── state-geocodes.csv                     <- Census regions .csv file
-
-#### images
-    ├── *.png                                  <- various .png files
