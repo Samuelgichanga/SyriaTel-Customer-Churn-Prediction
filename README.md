@@ -26,7 +26,7 @@ The dataset provided information on the following features for each customer:
 ### EDA
 From the visualization of the features I realized a trend in the certain states churning more than others, so I plotted the no. of churns per state below.
 
-![pic6a](./images/states.png)
+![pic6a](./images/state.png)
 
 ### Check imbalance in the data
 We have classification problem so we need to check the balance of the given data.
