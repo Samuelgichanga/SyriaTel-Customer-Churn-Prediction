@@ -2,7 +2,7 @@
 
 Author: Samuel Gichanga
 # Business understanding
-##Problem Statement
+## Problem Statement
 SyriaTel, a telecommunications company, is facing a high churn rate, with many customers discontinuing their services and switching to competitors. The company wants to address this issue by developing a customer churn prediction model. By analyzing the dataset, SyriaTel aims to gain insights into factors associated with churn, with the goal of reducing churn rate, increasing customer retention, and improving overall profitability.
 
 ## Specific Objectives
@@ -24,8 +24,10 @@ The dataset provided information on the following features for each customer:
 * If they have churned
 
 ### EDA
-I wanted to see if there might be a trend in the certain states churning more than others, so I plotted the no. of churns per state below.
-![pic6a](./images/map.png)
+From the visualization of the features I realized a trend in the certain states churning more than others, so I plotted the no. of churns per state below.
+![image](https://github.com/Samuelgichanga/SyriaTel-Customer-Churn-Prediction/assets/133040644/30c25012-072c-4f38-a498-0dde1c520376)
+
+![pic6a](./images/state.png)
 
 ### Check imbalance in the data
 We have classification problem so we need to check the balance of the given data.
